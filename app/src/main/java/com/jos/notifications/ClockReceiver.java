@@ -12,8 +12,10 @@ import android.os.Vibrator;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
@@ -31,16 +33,24 @@ public class ClockReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         // TODO: This method is called when the BroadcastReceiver is receiving
         // an Intent broadcast.
-        long hour = intent.getExtras().getLong("time");
+        long hour;
+        long time;
+            hour = intent.getLongExtra("time",0);
+            time = System.currentTimeMillis();
+
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
+        String dateString = formatter.format(hour);
 
         notif = (NotificationCompat.Builder) new NotificationCompat.Builder(context)
                 .setContentTitle("Alarm Hour")
                 .setSmallIcon(android.R.drawable.ic_notification_overlay)
-                .setContentText("Alarming at "+hour)
+                .setContentText("Alarming at "+dateString+" "+time)
                 .setColor(Color.BLUE)
-                .setShowWhen(true); //show timestamp
+                .setShowWhen(true)
+                .setVibrate(new long[] {100,100,100,500});
 
         nm = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         nm.notify(mId,notif.build());
+
     }
 }
