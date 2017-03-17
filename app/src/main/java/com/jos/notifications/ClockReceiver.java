@@ -33,24 +33,23 @@ public class ClockReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         // TODO: This method is called when the BroadcastReceiver is receiving
         // an Intent broadcast.
-        long hour;
-        long time;
-            hour = intent.getLongExtra("time",0);
-            time = System.currentTimeMillis();
-
+        long hour = intent.getLongExtra("time",0);
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
         String dateString = formatter.format(hour);
+
+        Intent iB = new Intent(context,Delay.class);
+        PendingIntent resultPi = PendingIntent.getActivity(context, 0,iB,PendingIntent.FLAG_UPDATE_CURRENT);
 
         notif = (NotificationCompat.Builder) new NotificationCompat.Builder(context)
                 .setContentTitle("Alarm Hour")
                 .setSmallIcon(android.R.drawable.ic_notification_overlay)
-                .setContentText("Alarming at "+dateString+" "+time)
+                .setContentText("Alarming at "+dateString+" ")
                 .setColor(Color.BLUE)
                 .setShowWhen(true)
-                .setVibrate(new long[] {100,100,100,500});
+                .setVibrate(new long[] {100,100,100,500})
+                .setContentIntent(resultPi);
 
         nm = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         nm.notify(mId,notif.build());
-
     }
 }
