@@ -32,14 +32,21 @@ public class ClockReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         // TODO: This method is called when the BroadcastReceiver is receiving
-        // an Intent broadcast.
+        // get the intent alarm time
         long hour = intent.getLongExtra("time",0);
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
+
+        //give date format in HH-MM-SS
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+        //convert alarm time from ms to HH-MM-SS
         String dateString = formatter.format(hour);
 
+        //Instantiate intent for the notification's action
         Intent iB = new Intent(context,Delay.class);
+        //this is mandatory, because again, we dont know when we are gonna tap the notification
+        //now we will call to an activity
         PendingIntent resultPi = PendingIntent.getActivity(context, 0,iB,PendingIntent.FLAG_UPDATE_CURRENT);
 
+        //Notification builder, with all the params of the notif
         notif = (NotificationCompat.Builder) new NotificationCompat.Builder(context)
                 .setContentTitle("Alarm Hour")
                 .setSmallIcon(android.R.drawable.ic_notification_overlay)
@@ -49,7 +56,10 @@ public class ClockReceiver extends BroadcastReceiver {
                 .setVibrate(new long[] {100,100,100,500})
                 .setContentIntent(resultPi);
 
+        //get notification manager service
         nm = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
+
+        //build the notification with id for later modifications
         nm.notify(mId,notif.build());
     }
 }
